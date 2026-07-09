@@ -16,6 +16,11 @@ from ats_engine import calculate_ats
 from jd_matcher import calculate_match
 from pdf_report import create_report
 from recommendations import get_missing_skills
+from resume_recommendations import (
+    generate_recommendations,
+    predicted_score
+)
+
 
 from werkzeug.security import (
     generate_password_hash,
@@ -200,6 +205,22 @@ def upload():
         result['ats_score'] = ats['ats_score']
         result['breakdown'] = ats['breakdown']
         result['suggestions'] = ats['suggestions']
+        result['resume_tips'] = (
+            generate_recommendations(
+                result
+            )
+        )
+        result['predicted_score'] = (
+            predicted_score(
+                result
+            )
+        )
+    
+
+    
+
+
+        
 
         # ======================
         # Job Description Match
