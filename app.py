@@ -30,7 +30,20 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'resume_analyzer_secret'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///resume.db'
+import os
+
+database_url = os.environ.get("DATABASE_URL")
+
+if database_url:
+    database_url = database_url.replace(
+        "postgres://",
+        "postgresql://",
+        1
+    )
+
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    database_url or "sqlite:///resume.db"
+)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
