@@ -207,7 +207,8 @@ def upload():
         result['suggestions'] = ats['suggestions']
         result['resume_tips'] = (
             generate_recommendations(
-                result
+                result,
+                text
             )
         )
         result['predicted_score'] = (

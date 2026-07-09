@@ -6,79 +6,54 @@ def generate_recommendations(result, text):
     recommendations = []
 
     # LinkedIn
-    if not re.search(
-        r'linkedin\.com',
-        text.lower()
-    ):
+    if not re.search(r'linkedin\.com', text.lower()):
         recommendations.append(
             "Add your LinkedIn profile URL."
         )
 
     # GitHub
-    if not re.search(
-        r'github\.com',
-        text.lower()
-    ):
+    if not re.search(r'github\.com', text.lower()):
         recommendations.append(
             "Add your GitHub profile URL."
         )
 
     # Skills
-    skills = result.get(
-        'skills',
-        []
-    )
+    skills = result.get('skills', [])
 
-    if len(skills) < 5:
-
-        recommendations.append(
-            f"Your resume contains only {len(skills)} skills. Add more relevant technical skills."
-        )
+    if isinstance(skills, list):
+        if len(skills) < 5:
+            recommendations.append(
+                f"Your resume contains only {len(skills)} skills. Add more relevant technical skills."
+            )
 
     # Projects
-    if not result.get(
-        'projects'
-    ):
-
+    if not result.get('projects'):
         recommendations.append(
             "Add at least two projects with technologies used and descriptions."
         )
 
     # Certifications
-    if not result.get(
-        'certifications'
-    ):
-
+    if not result.get('certifications'):
         recommendations.append(
             "Add certifications to improve your ATS score."
         )
 
     # Achievements
-    if not result.get(
-        'activities'
-    ):
-
+    if not result.get('activities'):
         recommendations.append(
             "Add achievements or extracurricular activities."
         )
 
     # Experience
-    if not result.get(
-        'experience'
-    ):
-
+    if not result.get('experience'):
         recommendations.append(
             "Add internships or practical experience."
         )
 
     # Contact Number
-    phone = re.search(
-        r'\d{10}',
-        text
-    )
+    phone = re.search(r'\d{10}', text)
 
     if not phone:
-
         recommendations.append(
             "Add a contact number."
         )
@@ -90,24 +65,19 @@ def generate_recommendations(result, text):
     )
 
     if not email:
-
         recommendations.append(
             "Add an email address."
         )
 
     # Resume Length
-    words = len(
-        text.split()
-    )
+    words = len(text.split())
 
     if words < 250:
-
         recommendations.append(
             "Resume is too short. Add more details about projects and skills."
         )
 
     elif words > 900:
-
         recommendations.append(
             "Resume is too long. Keep it between 1-2 pages."
         )
@@ -125,15 +95,41 @@ def generate_recommendations(result, text):
     found = False
 
     for word in action_words:
-
         if word in text.lower():
             found = True
             break
 
     if not found:
-
         recommendations.append(
             "Use action words like Developed, Designed, Implemented, Built, and Optimized."
         )
 
     return recommendations
+
+
+def predicted_score(result):
+
+    score = result.get('ats_score', 0)
+
+    if not result.get('linkedin'):
+        score += 2
+
+    if not result.get('github'):
+        score += 2
+
+    if not result.get('projects'):
+        score += 5
+
+    if not result.get('certifications'):
+        score += 5
+
+    if not result.get('experience'):
+        score += 5
+
+    if not result.get('activities'):
+        score += 3
+
+    if score > 100:
+        score = 100
+
+    return score
