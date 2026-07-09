@@ -2,65 +2,137 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="container mt-5">
 
-    <div class="col-md-5">
+    <div class="row justify-content-center">
 
-        <div class="card shadow p-4">
+        <div class="col-md-5">
 
-            <h2 class="text-center mb-4">
-                Login
-            </h2>
+            <div class="card shadow-lg p-4">
 
-            <form method="POST">
+                <h2 class="text-center mb-4">
+                    Login
+                </h2>
 
-                <div class="mb-3">
-                    <label>Email</label>
+                <form method="POST">
 
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control"
-                        required>
-                </div>
+                    <div class="mb-3">
 
-                <div class="mb-3">
-                    <label>Password</label>
+                        <label class="form-label">
+                            Email
+                        </label>
 
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control"
-                        required>
-                </div>
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            placeholder="Enter your email"
+                            required>
 
-                <div class="d-grid">
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="loginPassword"
+                                name="password"
+                                placeholder="Enter your password"
+                                required>
+
+                            <span
+                                class="input-group-text"
+                                onclick="toggleLoginPassword()"
+                                style="cursor:pointer;">
+
+                                <i
+                                    class="fa-solid fa-eye"
+                                    id="loginEye">
+                                </i>
+
+                            </span>
+
+                        </div>
+
+                    </div>
 
                     <button
-                        class="btn btn-primary">
+                        type="submit"
+                        class="btn btn-primary w-100">
 
                         Login
 
                     </button>
 
-                </div>
+                </form>
 
-            </form>
+                <hr>
 
-            <hr>
+                <p class="text-center">
 
-            <p class="text-center">
-                Don't have an account?
+                    Don't have an account?
 
-                <a href="/register">
-                    Register
-                </a>
-            </p>
+                    <a href="/register">
+                        Register
+                    </a>
+
+                </p>
+
+            </div>
 
         </div>
 
     </div>
 
 </div>
+
+<script>
+
+function toggleLoginPassword() {
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        );
+
+    const eye =
+        document.getElementById(
+            "loginEye"
+        );
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        eye.classList.remove(
+            "fa-eye"
+        );
+
+        eye.classList.add(
+            "fa-eye-slash"
+        );
+    }
+    else {
+
+        password.type = "password";
+
+        eye.classList.remove(
+            "fa-eye-slash"
+        );
+
+        eye.classList.add(
+            "fa-eye"
+        );
+    }
+}
+
+</script>
 
 {% endblock %}
