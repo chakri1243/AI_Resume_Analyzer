@@ -161,6 +161,34 @@
 
 <div class="card shadow p-4">
 
+    <h3>Missing Skills</h3>
+
+    {% if result.missing_skills %}
+
+        {% for skill in result.missing_skills %}
+
+            <span
+                class="badge bg-danger p-2 m-1">
+
+                {{ skill }}
+
+            </span>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            No major skills missing.
+        </p>
+
+    {% endif %}
+
+</div>
+
+<br>
+<div class="card shadow p-4">
+
     <h3>Suggestions</h3>
 
     <ul>

@@ -15,6 +15,7 @@ from section_extractor import analyze_resume
 from ats_engine import calculate_ats
 from jd_matcher import calculate_match
 from pdf_report import create_report
+from recommendations import get_missing_skills
 
 from werkzeug.security import (
     generate_password_hash,
@@ -174,10 +175,10 @@ def upload():
         # Extract resume text
         text = extract_text(filepath)
 
-        # Analyze sections
+        # Analyze resume sections
         result = analyze_resume(text)
 
-        # ATS Score
+        # Calculate ATS Score
         ats = calculate_ats(
             result,
             text
@@ -195,16 +196,33 @@ def upload():
             'job_description'
         )
 
+        role = request.form.get(
+            'job_role'
+        )
+
         match_score = 0
 
         if jd and jd.strip() != "":
-
             match_score = calculate_match(
                 text,
                 jd
             )
 
         result['match_score'] = match_score
+
+        # ======================
+        # Missing Skills
+        # ======================
+
+        if role and role.strip() != "":
+            result['missing_skills'] = (
+                get_missing_skills(
+                    result['skills'],
+                    role
+                )
+            )
+        else:
+            result['missing_skills'] = []
 
         # ======================
         # Save Report History
