@@ -1,0 +1,63 @@
+body{
+    background:#f5f7fa;
+}
+
+.card{
+    border:none;
+    border-radius:20px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+}
+
+.navbar-brand{
+    font-size:24px;
+}
+
+footer{
+    margin-top:80px;
+}
+
+.btn{
+    border-radius:30px;
+}
+.form-control{
+    border-radius:15px;
+}
+
+.card{
+    border-radius:20px;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    transition:0.3s;
+}
+
+.btn{
+    border-radius:25px;
+}
+
+body{
+    background:#f5f7fa;
+}
+.card{
+    border:none;
+    border-radius:20px;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    transition:0.3s;
+}
+
+.badge{
+    font-size:15px;
+}
+
+table{
+    border-radius:15px;
+    overflow:hidden;
+}

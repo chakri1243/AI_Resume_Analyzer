@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="text-center mb-5">
+    Resume Analysis Report
+</h1>
+
+<div class="row">
+
+    <div class="col-md-4">
+
+        <div class="card shadow p-4 text-center">
+
+            <h5>ATS Score</h5>
+
+            <h1 class="text-primary">
+                {{ result.ats_score }}/100
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow p-4 text-center">
+
+            <h5>Job Match Score</h5>
+
+            <h1 class="text-success">
+                {{ result.match_score }}%
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow p-4 text-center">
+
+            <h5>Skills Found</h5>
+
+            <h1 class="text-danger">
+                {{ result.skills|length }}
+            </h1>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="card shadow p-4">
+
+    <h3>Contact Information</h3>
+
+    <p><strong>Email :</strong> {{ result.email }}</p>
+
+    <p><strong>Phone :</strong> {{ result.phone }}</p>
+
+    <p><strong>LinkedIn :</strong> {{ result.linkedin }}</p>
+
+    <p><strong>GitHub :</strong> {{ result.github }}</p>
+
+</div>
+
+<br>
+
+<div class="card shadow p-4">
+
+    <h3>Skills</h3>
+
+    {% for skill in result.skills %}
+
+        <span class="badge bg-primary m-1 p-2">
+            {{ skill }}
+        </span>
+
+    {% endfor %}
+
+</div>
+
+<br>
+
+<div class="card shadow p-4">
+
+    <h3>Resume Sections</h3>
+
+    <ul class="list-group">
+
+        <li class="list-group-item">
+            Education :
+            {{ result.education }}
+        </li>
+
+        <li class="list-group-item">
+            Projects :
+            {{ result.projects }}
+        </li>
+
+        <li class="list-group-item">
+            Experience :
+            {{ result.experience }}
+        </li>
+
+        <li class="list-group-item">
+            Certifications :
+            {{ result.certifications }}
+        </li>
+
+        <li class="list-group-item">
+            Achievements :
+            {{ result.achievements }}
+        </li>
+
+    </ul>
+
+</div>
+
+<br>
+
+<div class="card shadow p-4">
+
+    <h3>Score Breakdown</h3>
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+                <th>Category</th>
+                <th>Score</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for key, value in result.breakdown.items() %}
+
+            <tr>
+
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<br>
+
+<div class="card shadow p-4">
+
+    <h3>Suggestions</h3>
+
+    <ul>
+
+        {% for s in result.suggestions %}
+
+        <li>{{ s }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+<br>
+
+<div class="text-center">
+
+    <a
+        href="/download/{{ result.ats_score }}"
+        class="btn btn-success">
+
+        Download Report
+
+    </a>
+
+    <a
+        href="/upload"
+        class="btn btn-primary">
+
+        Analyze Another Resume
+
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8">
+
+        <div class="card shadow p-5">
+
+            <h2 class="text-center mb-4">
+                Upload Resume
+            </h2>
+
+            <form
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Upload Resume (PDF or DOCX)
+                    </label>
+
+                    <input
+                        type="file"
+                        name="resume"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Paste Job Description (Optional)
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        name="job_description"
+                        rows="8"
+                        placeholder="Paste Job Description Here..."></textarea>
+
+                </div>
+
+                <div class="d-grid">
+
+                    <button
+                        class="btn btn-primary btn-lg">
+
+                        Analyze Resume
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    Resume Analysis History
+</h1>
+
+<div class="card shadow p-4">
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Resume</th>
+                <th>ATS Score</th>
+                <th>Match Score</th>
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for report in reports %}
+
+            <tr>
+
+                <td>
+                    {{ report.filename }}
+                </td>
+
+                <td>
+                    {{ report.ats_score }}
+                </td>
+
+                <td>
+                    {{ report.match_score }}%
+                </td>
+
+                <td>
+                    {{ report.date }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
