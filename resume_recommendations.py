@@ -1,119 +1,139 @@
-def generate_recommendations(result):
+import re
+
+
+def generate_recommendations(result, text):
 
     recommendations = []
 
     # LinkedIn
-    if not result.get('linkedin'):
+    if not re.search(
+        r'linkedin\.com',
+        text.lower()
+    ):
         recommendations.append(
-            "Add your LinkedIn profile URL to make your resume more professional."
+            "Add your LinkedIn profile URL."
         )
 
     # GitHub
-    if not result.get('github'):
+    if not re.search(
+        r'github\.com',
+        text.lower()
+    ):
         recommendations.append(
-            "Add your GitHub profile URL to showcase your projects and coding skills."
-        )
-
-    # Education
-    if not result.get('education'):
-        recommendations.append(
-            "Add your education details including degree, college, and graduation year."
-        )
-
-    # CGPA
-    if not result.get('cgpa'):
-        recommendations.append(
-            "Mention your CGPA or percentage in the education section."
+            "Add your GitHub profile URL."
         )
 
     # Skills
-    skills = result.get('skills', [])
+    skills = result.get(
+        'skills',
+        []
+    )
 
-    if isinstance(skills, list):
-        if len(skills) < 5:
-            recommendations.append(
-                "Add more technical skills related to your domain."
-            )
-    elif not skills:
+    if len(skills) < 5:
+
         recommendations.append(
-            "Add technical skills to improve your ATS score."
+            f"Your resume contains only {len(skills)} skills. Add more relevant technical skills."
         )
 
     # Projects
-    projects = result.get('projects')
+    if not result.get(
+        'projects'
+    ):
 
-    if not projects:
         recommendations.append(
-            "Add at least two projects with technologies used and project descriptions."
+            "Add at least two projects with technologies used and descriptions."
         )
 
     # Certifications
-    certifications = result.get('certifications')
+    if not result.get(
+        'certifications'
+    ):
 
-    if not certifications:
         recommendations.append(
             "Add certifications to improve your ATS score."
         )
 
-    # Activities / Achievements
-    activities = result.get('activities')
+    # Achievements
+    if not result.get(
+        'activities'
+    ):
 
-    if not activities:
         recommendations.append(
-            "Add achievements, extracurricular activities, or positions of responsibility."
+            "Add achievements or extracurricular activities."
         )
 
     # Experience
-    experience = result.get('experience')
+    if not result.get(
+        'experience'
+    ):
 
-    if not experience:
         recommendations.append(
-            "Add internships, practical experience, or training programs."
+            "Add internships or practical experience."
         )
 
-    # General recommendations
-    recommendations.append(
-        "Use action words like Developed, Designed, Implemented, Built, and Optimized."
+    # Contact Number
+    phone = re.search(
+        r'\d{10}',
+        text
     )
 
-    recommendations.append(
-        "Quantify your achievements with numbers and percentages whenever possible."
+    if not phone:
+
+        recommendations.append(
+            "Add a contact number."
+        )
+
+    # Email
+    email = re.search(
+        r'[\w\.-]+@[\w\.-]+',
+        text
     )
 
-    recommendations.append(
-        "Keep your resume length between 1 and 2 pages."
+    if not email:
+
+        recommendations.append(
+            "Add an email address."
+        )
+
+    # Resume Length
+    words = len(
+        text.split()
     )
 
-    recommendations.append(
-        "Use clear section headings and a professional format."
-    )
+    if words < 250:
+
+        recommendations.append(
+            "Resume is too short. Add more details about projects and skills."
+        )
+
+    elif words > 900:
+
+        recommendations.append(
+            "Resume is too long. Keep it between 1-2 pages."
+        )
+
+    # Action Words
+    action_words = [
+        "developed",
+        "designed",
+        "implemented",
+        "built",
+        "created",
+        "optimized"
+    ]
+
+    found = False
+
+    for word in action_words:
+
+        if word in text.lower():
+            found = True
+            break
+
+    if not found:
+
+        recommendations.append(
+            "Use action words like Developed, Designed, Implemented, Built, and Optimized."
+        )
 
     return recommendations
-
-
-def predicted_score(result):
-
-    score = result.get('ats_score', 0)
-
-    if not result.get('linkedin'):
-        score += 2
-
-    if not result.get('github'):
-        score += 2
-
-    if not result.get('certifications'):
-        score += 5
-
-    if not result.get('projects'):
-        score += 5
-
-    if not result.get('experience'):
-        score += 5
-
-    if not result.get('activities'):
-        score += 3
-
-    if score > 100:
-        score = 100
-
-    return score
