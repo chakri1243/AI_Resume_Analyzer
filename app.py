@@ -9,11 +9,7 @@ import os
 from datetime import datetime
 
 from database import db
-from models import (
-    User,
-    ResumeReport,
-    WebsiteVisit
-)
+
 from flask_migrate import Migrate
 from parser import extract_text
 from section_extractor import analyze_resume
@@ -66,8 +62,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-#db.init_app(app)
-migrate = Migrate(app, db)
+db.init_app(app)
+
+migrate = Migrate()
+migrate.init_app(app, db)
+from models import (
+    User,
+    ResumeReport,
+    WebsiteVisit
+)
 
 UPLOAD_FOLDER = "uploads"
 REPORT_FOLDER = "reports"
