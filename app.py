@@ -45,8 +45,6 @@ ADMIN_EMAIL = "chakrapanigutha@gmail.com"
 
 app.config['SECRET_KEY'] = 'resume_analyzer_secret'
 
-import os
-
 database_url = os.environ.get("DATABASE_URL")
 
 if database_url:
@@ -222,8 +220,7 @@ def upload():
 
         # Extract resume text
         text = extract_text(filepath)
-        result['grammar'] = check_grammar(text)
-
+        
         # Analyze resume sections
         result = analyze_resume(text)
         result['grammar'] = check_grammar(text)
