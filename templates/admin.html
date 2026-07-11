@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Developer Dashboard
+</h2>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="card shadow p-4 text-center">
+            <h4>Total Visitors</h4>
+            <h1>{{ total_visits }}</h1>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow p-4 text-center">
+            <h4>Total Users</h4>
+            <h1>{{ total_users }}</h1>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow p-4 text-center">
+            <h4>Total Resume Analyses</h4>
+            <h1>{{ total_reports }}</h1>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<h3>
+    Registered Users
+</h3>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+
+    {% for user in users %}
+
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<hr>
+
+<h3>
+    Resume Analysis History
+</h3>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Resume</th>
+        <th>ATS Score</th>
+        <th>Date</th>
+        <th>Download</th>
+    </tr>
+
+    {% for report in reports %}
+
+    <tr>
+
+        <td>{{ report.id }}</td>
+
+        <td>{{ report.user_id }}</td>
+
+        <td>{{ report.filename }}</td>
+
+        <td>{{ report.ats_score }}</td>
+
+        <td>{{ report.date }}</td>
+
+        <td>
+
+            <a
+                href="/admin/download/{{ report.id }}"
+                class="btn btn-primary btn-sm">
+
+                Download
+
+            </a>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Website Visitors</h3>
+
+<table class="table table-bordered">
+
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>IP Address</th>
+            <th>Browser</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for v in visitors %}
+
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.ip_address }}</td>
+            <td>{{ v.user_agent }}</td>
+            <td>{{ v.date }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+{% endblock %}

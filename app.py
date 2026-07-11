@@ -9,18 +9,30 @@ import os
 from datetime import datetime
 
 from database import db
-from models import User, ResumeReport
+from models import (
+    User,
+    ResumeReport,
+    WebsiteVisit
+)
 from parser import extract_text
 from section_extractor import analyze_resume
 from ats_engine import calculate_ats
 from jd_matcher import calculate_match
 from pdf_report import create_report
+from resume_builder import create_resume
 from recommendations import get_missing_skills
 from resume_recommendations import (
     generate_recommendations,
     predicted_score
 )
-
+from grammar_suggestions import check_grammar
+from resume_improver import improve_resume
+from project_recommendations import (
+    recommend_projects
+)
+from certification_recommendations import (
+    recommended_certifications
+)
 
 from werkzeug.security import (
     generate_password_hash,
@@ -28,6 +40,7 @@ from werkzeug.security import (
 )
 
 app = Flask(__name__)
+ADMIN_EMAIL = "chakrapanigutha@gmail.com"
 
 # ======================
 # Configuration
@@ -75,7 +88,19 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+
+    visit = WebsiteVisit(
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get('User-Agent'),
+        date=str(datetime.now())
+    )
+
+    db.session.add(visit)
+    db.session.commit()
+
+    return render_template(
+        'index.html'
+    )
 
 
 # ======================
@@ -195,16 +220,53 @@ def upload():
 
         # Analyze resume sections
         result = analyze_resume(text)
+        result['grammar'] = check_grammar(text)
 
         # Calculate ATS Score
         ats = calculate_ats(
             result,
             text
         )
+        tips, future = improve_resume(
+            result
+        )
+
+        result['improvement_suggestions'] = tips
+
+        result['future_skills'] = future
+        result['recommended_projects'] = (
+            recommend_projects(
+                result.get(
+                    'skills',
+                   []
+               )
+            )
+        )
+        result['recommended_certifications'] = (
+            recommended_certifications()
+        )
 
         result['ats_score'] = ats['ats_score']
         result['breakdown'] = ats['breakdown']
         result['suggestions'] = ats['suggestions']
+        # Grammar Suggestions
+        result['grammar'] = check_grammar(text)
+
+ # Resume Improvement Suggestions
+        tips, future = improve_resume(result)
+
+        result['improvement_suggestions'] = tips
+        result['future_skills'] = future
+
+# Recommended Projects
+        result['recommended_projects'] = recommend_projects(
+            result.get('skills', [])
+        )
+
+# Recommended Certifications
+        result['recommended_certifications'] = (
+            recommended_certifications()
+        )
         result['resume_tips'] = (
             generate_recommendations(
                 result,
@@ -266,11 +328,10 @@ def upload():
         report = ResumeReport(
             user_id=session['user_id'],
             filename=file.filename,
+            filepath=filepath,
             ats_score=result['ats_score'],
             match_score=match_score,
-            date=str(
-                datetime.now()
-            )
+            date=str(datetime.now())
         )
 
         db.session.add(report)
@@ -327,8 +388,84 @@ def download(score):
         filename,
         as_attachment=True
     )
+@app.route('/builder')
+def builder():
 
+    if 'user_id' not in session:
+        return redirect('/login')
 
+    return render_template(
+        'builder.html'
+    )
+@app.route(
+    '/generate_resume',
+    methods=['POST']
+)
+def generate_resume():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    data = request.form.to_dict()
+
+    filename = create_resume(
+        data
+    )
+
+    return send_file(
+        filename,
+        as_attachment=True
+    )
+@app.route('/admin')
+def admin():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    user = User.query.get(session['user_id'])
+
+    if user.email.strip().lower() != ADMIN_EMAIL.strip().lower():
+        return "Access Denied"
+
+    users = User.query.all()
+
+    reports = ResumeReport.query.order_by(
+        ResumeReport.id.desc()
+    ).all()
+
+    visitors = WebsiteVisit.query.order_by(
+        WebsiteVisit.id.desc()
+    ).all()
+
+    return render_template(
+        'admin.html',
+        users=users,
+        reports=reports,
+        visitors=visitors,
+        total_users=len(users),
+        total_reports=len(reports),
+        total_visits=len(visitors)
+    )
+
+@app.route('/admin/download/<int:id>')
+def admin_download(id):
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    user = User.query.get(
+        session['user_id']
+    )
+
+    if user.email != ADMIN_EMAIL:
+        return "Access Denied"
+
+    report = ResumeReport.query.get(id)
+
+    return send_file(
+        report.filepath,
+        as_attachment=True
+    )
 # ======================
 # Logout
 # ======================

@@ -40,12 +40,33 @@ class ResumeReport(db.Model):
         db.String(300)
     )
 
+    filepath = db.Column(
+        db.String(500)
+    )
     ats_score = db.Column(
         db.Integer
     )
 
     match_score = db.Column(
         db.Integer
+    )
+
+    date = db.Column(
+        db.String(100)
+    )
+class WebsiteVisit(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    ip_address = db.Column(
+        db.String(100)
+    )
+
+    user_agent = db.Column(
+        db.String(500)
     )
 
     date = db.Column(
