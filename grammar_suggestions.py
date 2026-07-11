@@ -14,7 +14,7 @@ def check_grammar(text):
 
         suggestions = []
 
-        for m in data["matches"]:
+        for m in data["matches"][:10]:
             suggestions.append({
                 "message": m["message"],
                 "suggestion":
