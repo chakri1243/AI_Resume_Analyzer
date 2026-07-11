@@ -66,7 +66,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
+#db.init_app(app)
 migrate = Migrate(app, db)
 
 UPLOAD_FOLDER = "uploads"
@@ -219,6 +219,7 @@ def upload():
 
         # Extract resume text
         text = extract_text(filepath)
+        result['grammar'] = check_grammar(text)
 
         # Analyze resume sections
         result = analyze_resume(text)

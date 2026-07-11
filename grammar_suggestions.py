@@ -1,23 +1,42 @@
-import language_tool_python
-
-tool = language_tool_python.LanguageTool(
-    'en-US'
-)
+import requests
 
 
 def check_grammar(text):
-
-    matches = tool.check(text)
-
-    mistakes = []
-
-    for m in matches:
-
-        mistakes.append(
-            {
-                "message": m.message,
-                "incorrect": m.context
+    try:
+        response = requests.post(
+            "https://api.languagetool.org/v2/check",
+            data={
+                "text": text,
+                "language": "en-US"
             }
         )
 
-    return mistakes
+        data = response.json()
+        mistakes = []
+
+        for match in data.get("matches", []):
+
+            incorrect = text[
+                match["offset"]:
+                match["offset"] + match["length"]
+            ]
+
+            suggestions = []
+
+            if "replacements" in match:
+                suggestions = [
+                    r["value"]
+                    for r in match["replacements"][:3]
+                ]
+
+            mistakes.append({
+                "message": match["message"],
+                "incorrect": incorrect,
+                "suggestions": suggestions
+            })
+
+        return mistakes
+
+    except Exception as e:
+        print("Grammar Error:", e)
+        return []

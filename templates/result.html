@@ -248,31 +248,41 @@
     <!-- Grammar Suggestions -->
     {% if result.grammar %}
 
-    <div class="card shadow p-4 mb-4">
+<div class="card shadow p-4 mt-4">
 
-        <h3 class="text-warning">
-            Grammar & Sentence Suggestions
-        </h3>
+    <h3 class="text-danger">
+        Grammar & Sentence Suggestions
+    </h3>
 
-        {% for g in result.grammar %}
+    {% for g in result.grammar %}
 
-        <div class="alert alert-warning">
+    <div class="alert alert-warning">
 
-            <strong>Issue:</strong>
-            {{ g.message }}
+        <strong>Issue:</strong>
+        {{ g.message }}
 
-            <br>
+        <br>
 
-            <strong>Sentence:</strong>
-            {{ g.incorrect }}
+        <strong>Text:</strong>
+        {{ g.incorrect }}
 
-        </div>
+        {% if g.suggestions %}
 
-        {% endfor %}
+        <br>
+
+        <strong>Suggestions:</strong>
+
+        {{ g.suggestions|join(', ') }}
+
+        {% endif %}
 
     </div>
 
-    {% endif %}
+    {% endfor %}
+
+</div>
+
+{% endif %}
 
     <!-- Extracted Skills -->
     {% if result.skills %}
