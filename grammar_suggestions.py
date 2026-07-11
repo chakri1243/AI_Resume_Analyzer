@@ -1,6 +1,5 @@
 import requests
 
-
 def check_grammar(text):
     try:
         response = requests.post(
@@ -12,31 +11,17 @@ def check_grammar(text):
         )
 
         data = response.json()
-        mistakes = []
 
-        for match in data.get("matches", []):
+        suggestions = []
 
-            incorrect = text[
-                match["offset"]:
-                match["offset"] + match["length"]
-            ]
-
-            suggestions = []
-
-            if "replacements" in match:
-                suggestions = [
-                    r["value"]
-                    for r in match["replacements"][:3]
-                ]
-
-            mistakes.append({
-                "message": match["message"],
-                "incorrect": incorrect,
-                "suggestions": suggestions
+        for m in data["matches"]:
+            suggestions.append({
+                "message": m["message"],
+                "suggestion":
+                [r["value"] for r in m["replacements"]]
             })
 
-        return mistakes
+        return suggestions
 
-    except Exception as e:
-        print("Grammar Error:", e)
+    except:
         return []
